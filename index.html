@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lakshmy Suresh — Frontend Developer & Educator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #050810;
+    --bg2: #0c1120;
+    --bg3: #111827;
+    --accent: #7c3aed;
+    --accent2: #a78bfa;
+    --accent3: #c4b5fd;
+    --cyan: #22d3ee;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: rgba(124,58,237,0.25);
+    --glow: rgba(124,58,237,0.15);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: none;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  #cursor-dot {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: background 0.2s;
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, border-color 0.3s, opacity 0.3s;
+    opacity: 0.6;
+  }
+  #cursor-ring.hovered { width: 56px; height: 56px; border-color: var(--cyan); opacity: 1; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(5,8,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent2); letter-spacing: 0.05em; }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent2); }
+
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 7rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(124,58,237,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 860px; }
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--cyan); }
+  h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .name-accent { color: var(--accent2); }
+  .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 560px; margin-bottom: 2.5rem; line-height: 1.75; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 0.8rem 2rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: none;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #6d28d9; transform: translateY(-2px); }
+  .btn-ghost {
+    padding: 0.8rem 2rem;
+    background: transparent;
+    color: var(--accent2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: none;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--accent2); background: var(--glow); transform: translateY(-2px); }
+
+  section { padding: 6rem 3rem; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after { content: ''; display: block; height: 1px; width: 40px; background: var(--accent); }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 3rem; line-height: 1.15; }
+
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .about-text p { color: var(--muted); margin-bottom: 1.25rem; line-height: 1.8; font-size: 15px; }
+  .stats-row { display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; }
+  .stat-num { font-size: 2.5rem; font-weight: 700; color: var(--accent2); font-family: 'Space Mono', monospace; line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+  .about-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .avatar-ring {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+  .avatar-initials { font-size: 2rem; font-weight: 700; color: var(--accent2); font-family: 'Space Mono', monospace; }
+  .about-card-name { text-align: center; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .about-card-role { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 1.5rem; }
+  .about-card-items { display: flex; flex-direction: column; gap: 0.75rem; }
+  .about-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  .about-item-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+
+  /* SKILLS — teaching-focused */
+  #skills { background: var(--bg); }
+  .skills-intro { color: var(--muted); font-size: 15px; max-width: 600px; margin-bottom: 3rem; line-height: 1.8; }
+
+  .skills-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .skills-group { margin-bottom: 3rem; }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+
+  .skill-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+  .skill-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .skill-card:hover::after { opacity: 1; }
+  .skill-card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .skill-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .skill-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 0.75rem; }
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .skill-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: rgba(124,58,237,0.12);
+    color: var(--accent3);
+    border: 0.5px solid rgba(124,58,237,0.3);
+  }
+  .skill-tag.cyan {
+    background: rgba(34,211,238,0.1);
+    color: var(--cyan);
+    border-color: rgba(34,211,238,0.3);
+  }
+
+  /* EXPERIENCE */
+  #experience { background: var(--bg2); }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 1px;
+    background: var(--border);
+  }
+  .timeline-item { position: relative; padding: 0 0 2.5rem 2.5rem; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg2);
+  }
+  .timeline-item.senior::before { background: var(--cyan); }
+  .timeline-date { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+  .timeline-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .timeline-company { color: var(--muted); font-size: 13px; margin-bottom: 0.75rem; }
+  .timeline-desc { color: var(--muted); font-size: 14px; line-height: 1.75; }
+  .timeline-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.75rem; }
+  .timeline-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(124,58,237,0.12);
+    color: var(--accent3);
+    border: 0.5px solid rgba(124,58,237,0.3);
+  }
+
+  /* CONTACT */
+  #contact { background: var(--bg); text-align: center; }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-sub { color: var(--muted); margin-bottom: 2.5rem; line-height: 1.8; font-size: 15px; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+  .contact-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .contact-link:hover { color: var(--accent2); border-color: var(--accent2); }
+
+  footer {
+    background: var(--bg2);
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 3rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .stats-row { gap: 1.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-logo">LS.dev</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Frontend Developer & Educator · 10 Years</p>
+    <h1>Hi, I'm<br><span class="name-accent">Lakshmy Suresh</span></h1>
+    <p class="hero-sub">A decade of building beautiful web interfaces — and teaching the next generation of developers to do the same. I believe great code and great teaching go hand in hand.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary">Get in touch</a>
+      <a href="#skills" class="btn-ghost">Explore my skills</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="section-label">About me</p>
+      <h2>Developer, educator, mentor</h2>
+      <p>Over 10 years, I've worn many hats — frontend engineer, tech lead, and educator. I've shipped production-grade apps and stood in front of classrooms full of aspiring developers, and I love both equally.</p>
+      <p>My teaching philosophy is simple: make it click. Complex concepts become clear when you pair them with real code, real projects, and genuine enthusiasm.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Years exp.</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">Students</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">40+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-card">
+      <div class="avatar-ring">
+        <span class="avatar-initials">LS</span>
+      </div>
+      <div class="about-card-name">Lakshmy Suresh</div>
+      <div class="about-card-role">Frontend Developer & Educator · Kerala, IN</div>
+      <div class="about-card-items">
+        <div class="about-item"><span class="about-item-dot"></span>10 years of frontend expertise</div>
+        <div class="about-item"><span class="about-item-dot"></span>Curriculum design & mentorship</div>
+        <div class="about-item"><span class="about-item-dot"></span>React, JavaScript & web fundamentals</div>
+        <div class="about-item"><span class="about-item-dot"></span>Online & in-person teaching</div>
+        <div class="about-item"><span class="about-item-dot"></span>Open to training & consulting roles</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <p class="section-label">Expertise</p>
+  <h2>Skills & teaching areas</h2>
+  <p class="skills-intro">A decade of hands-on development combined with a passion for education. I bring both deep technical knowledge and the ability to communicate it clearly.</p>
+
+  <div class="skills-group">
+    <div class="skills-section-title">Teaching & Education</div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon">🎓</div>
+        <div class="skill-name">Curriculum Design</div>
+        <div class="skill-desc">Designing structured learning paths from beginner to advanced, tailored to real-world industry needs.</div>
+        <div class="skill-tags">
+          <span class="skill-tag cyan">Syllabus design</span>
+          <span class="skill-tag cyan">Learning outcomes</span>
+          <span class="skill-tag cyan">Assessments</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">🧑‍💻</div>
+        <div class="skill-name">Live Coding & Workshops</div>
+        <div class="skill-desc">Conducting hands-on workshops, live coding sessions, and project-based learning for all levels.</div>
+        <div class="skill-tags">
+          <span class="skill-tag cyan">Bootcamps</span>
+          <span class="skill-tag cyan">Webinars</span>
+          <span class="skill-tag cyan">1-on-1 coaching</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">🧭</div>
+        <div class="skill-name">Mentorship</div>
+        <div class="skill-desc">Guiding junior developers and career-changers with personalised feedback, code reviews, and career advice.</div>
+        <div class="skill-tags">
+          <span class="skill-tag cyan">Code reviews</span>
+          <span class="skill-tag cyan">Career guidance</span>
+          <span class="skill-tag cyan">Portfolio reviews</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills-group">
+    <div class="skills-section-title">Frontend Development</div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon">⚛️</div>
+        <div class="skill-name">React & Next.js</div>
+        <div class="skill-desc">Building scalable component libraries, SSR apps, and design systems with modern React patterns.</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Hooks</span>
+          <span class="skill-tag">App Router</span>
+          <span class="skill-tag">Context</span>
+          <span class="skill-tag">SSR</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">🌐</div>
+        <div class="skill-name">HTML, CSS & JavaScript</div>
+        <div class="skill-desc">Deep mastery of web fundamentals — the foundation I teach every student to build on first.</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Semantic HTML</span>
+          <span class="skill-tag">CSS Grid</span>
+          <span class="skill-tag">ES2024+</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">🎨</div>
+        <div class="skill-name">UI & Performance</div>
+        <div class="skill-desc">Crafting accessible, responsive interfaces optimised for speed, usability, and visual polish.</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Tailwind</span>
+          <span class="skill-tag">Accessibility</span>
+          <span class="skill-tag">Web Vitals</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <p class="section-label">Career journey</p>
+  <h2>10 years of experience</h2>
+  <div class="timeline">
+
+    <div class="timeline-item senior">
+      <div class="timeline-date">2022 — Present</div>
+      <div class="timeline-title">Senior Frontend Developer & Tech Educator</div>
+      <div class="timeline-company">Independent / Freelance · Full-time</div>
+      <div class="timeline-desc">Leading frontend projects for clients while running an active teaching practice — delivering bootcamp modules, corporate training, and one-on-one mentorship for aspiring developers.</div>
+      <div class="timeline-badges">
+        <span class="timeline-badge">Teaching</span>
+        <span class="timeline-badge">React</span>
+        <span class="timeline-badge">Mentorship</span>
+        <span class="timeline-badge">Curriculum</span>
+      </div>
+    </div>
+
+    <div class="timeline-item senior">
+      <div class="timeline-date">2019 — 2022</div>
+      <div class="timeline-title">Frontend Lead & In-house Trainer</div>
+      <div class="timeline-company">Tech Company · Full-time</div>
+      <div class="timeline-desc">Led a frontend team of 6, architected the company's design system, and ran internal training programmes to upskill junior developers in modern React and JavaScript practices.</div>
+      <div class="timeline-badges">
+        <span class="timeline-badge">Team lead</span>
+        <span class="timeline-badge">Design systems</span>
+        <span class="timeline-badge">Internal training</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">2016 — 2019</div>
+      <div class="timeline-title">Frontend Developer</div>
+      <div class="timeline-company">Product Startup · Full-time</div>
+      <div class="timeline-desc">Built user-facing features for a SaaS product used by thousands of customers. Began mentoring junior team members and contributing to onboarding documentation.</div>
+      <div class="timeline-badges">
+        <span class="timeline-badge">SaaS</span>
+        <span class="timeline-badge">JavaScript</span>
+        <span class="timeline-badge">Mentoring</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">2014 — 2016</div>
+      <div class="timeline-title">Junior Frontend Developer</div>
+      <div class="timeline-company">Web Agency · Full-time</div>
+      <div class="timeline-desc">Started my professional journey building responsive websites and interactive UIs for diverse clients. Developed a love for clean code and teaching colleagues new techniques.</div>
+      <div class="timeline-badges">
+        <span class="timeline-badge">HTML/CSS</span>
+        <span class="timeline-badge">jQuery</span>
+        <span class="timeline-badge">Client work</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label" style="justify-content:center">Let's connect</p>
+    <h2>Want to learn or build together?</h2>
+    <p class="contact-sub">Whether you're looking for a senior frontend developer, a workshop facilitator, or a mentor to guide your team — I'd love to hear from you.</p>
+    <a href="mailto:lakshmy@example.com" class="btn-primary">Say hello →</a>
+    <div class="contact-links">
+      <a href="#" class="contact-link">GitHub</a>
+      <a href="#" class="contact-link">LinkedIn</a>
+      <a href="#" class="contact-link">YouTube</a>
+      <a href="#" class="contact-link">Resume PDF</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-text">© 2026 Lakshmy Suresh</span>
+  <span class="footer-text">Built with intent & a decade of craft</span>
+</footer>
+
+<script>
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function animateCursor() {
+    rx = lerp(rx, mx, 0.12);
+    ry = lerp(ry, my, 0.12);
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  document.querySelectorAll('a, button, .skill-card').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+  });
+</script>
+</body>
+</html>
